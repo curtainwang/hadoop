@@ -1,0 +1,29 @@
+/**
+	 * 向指定的表插入单个Put对象
+	 * 
+	 * @param tablename
+	 * @param conf
+	 * @throws Exception
+	 */
+	public static void insertData(String tableName, HBaseConfiguration conf) {
+		HTable table = null;
+		try {
+			if (table == null) {
+				table = new HTable(conf, tableName);
+			}
+			// 这里我使用time+6位随机数为row关键字,确保不重复
+			String rowname = System.currentTimeMillis() / 1000 + "" + CommUtil.getSixRadom();
+			System.out.println("rowname = " + rowname);
+			Put p = new Put(Bytes.toBytes(rowname));
+			p.add("acc".getBytes(), new Long(System.currentTimeMillis()).longValue(), "大绝招".getBytes());
+			p.add("pwd".getBytes(), new Long(System.currentTimeMillis()).longValue(), "123456".getBytes());
+			p.add("sex".getBytes(), new Long(System.currentTimeMillis()).longValue(), "1".getBytes());
+			p.add("age".getBytes(), new Long(System.currentTimeMillis()).longValue(), "2222".getBytes());
+			table.put(p);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			CommUtil.HBaseClose(table);
+		}
+	}
+
